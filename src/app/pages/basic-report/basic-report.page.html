@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Basic Report</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="returnToSearch()">
+        <ion-icon class="ion-margin-end" name="return-left"></ion-icon>
+        Return to Search
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-title class="ion-margin-top">{{foodDetails?.description}}</ion-title>
+  <ion-list>
+    <ion-item *ngFor="let detail of foodDetails?.foodNutrients">
+      <ion-label>{{detail?.nutrient?.name}}: {{detail?.amount}} {{detail?.nutrient?.unitName}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
