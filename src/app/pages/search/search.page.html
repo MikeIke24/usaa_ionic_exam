@@ -23,36 +23,44 @@
 
     <ion-list *ngIf="firstSearchComplete">
         <ion-item *ngFor="let food of foodSearchResults">
-            <ion-label>{{food.description}}<span *ngIf="food?.brandOwner" class="brand"> by {{food.brandOwner}}</span></ion-label>
+            <ion-label>{{food.description}}<span *ngIf="food?.brandOwner" class="brand"> by {{food.brandOwner}}</span>
+            </ion-label>
             <ng-container *ngIf="!(isMobile | async); else mobileSelect">
+                <ng-container [ngTemplateOutlet]="!isAFavorite(food.fdcId) ? favorite : unfavorite"
+                              [ngTemplateOutletContext]="{food: food}">
+                </ng-container>
                 <ion-button slot="end" (click)="getFoodBasicReport(food.fdcId)">
                     <ion-icon name="information-circle-outline" slot="end"></ion-icon>
                     Info
                 </ion-button>
-                <ng-container [ngTemplateOutlet]="!isAFavorite(food.fdcId) ? favorite : unfavorite"
-                [ngTemplateOutletContext]="{food: food}">
-
-                </ng-container>
             </ng-container>
 
         </ion-item>
     </ion-list>
 </ion-content>
 
-<mat-menu #pageMenu="matMenu">
+<ng-template #mobileSelect>
+    <ion-item>
+        <ion-button [mat-menu-trigger-for]="mobileMenu">
+            <ion-icon name="more"></ion-icon>
+        </ion-button>
+    </ion-item>
+</ng-template>
+
+<mat-menu #mobileMenu="matMenu">
     <div>More Info</div>
     <div>Add to Favorites</div>
 </mat-menu>
 
-<ng-template #unfavorite let-food="'food'">
-    <ion-button slot="end" color="secondary" (click)="removeFavorite(food)" >
+<ng-template #unfavorite let-food="food">
+    <ion-button slot="end" color="secondary" (click)="removeFavorite(food.fdcId)">
         <ion-icon name="star" slot="end"></ion-icon>
         Unfavorite
     </ion-button>
 </ng-template>
 
-<ng-template #favorite let-food="'food'">
-    <ion-button slot="end" color="tertiary" (click)="addFavorite(food)" >
+<ng-template #favorite let-food="food">
+    <ion-button slot="end" color="tertiary" (click)="addFavorite(food)">
         <ion-icon name="star" slot="end"></ion-icon>
         Favorite
     </ion-button>

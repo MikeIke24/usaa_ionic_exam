@@ -59,7 +59,7 @@ export class SearchPage implements OnInit {
     }
 
     addFavorite(food: FoodItemFromSearch): void {
-        this.favorites.addFavorite({fdcId: food.fdcId, description: food.description});
+        this.favorites.addFavorite({fdcId: food.fdcId, description: food.description, brand: food.brandOwner});
     }
 
     removeFavorite(fdcId: number): void {

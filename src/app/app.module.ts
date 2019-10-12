@@ -10,6 +10,8 @@ import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import {AppMaterialModule} from './core/app-material.module';
+import {PortalModule} from '@angular/cdk/portal';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [AppComponent],
@@ -18,6 +20,8 @@ import {AppMaterialModule} from './core/app-material.module';
         BrowserModule,
         HttpClientModule,
         AppMaterialModule,
+        PortalModule,
+        BrowserAnimationsModule,
         IonicModule.forRoot(),
         AppRoutingModule
     ],

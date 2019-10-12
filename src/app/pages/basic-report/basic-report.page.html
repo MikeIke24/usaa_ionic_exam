@@ -17,7 +17,7 @@
   <ion-title class="ion-margin-top">{{foodDetails?.description}}</ion-title>
   <ion-list>
     <ion-item *ngFor="let detail of foodDetails?.foodNutrients">
-      <ion-label>{{detail?.nutrient?.name}}: {{detail?.amount}} {{detail?.nutrient?.unitName}}</ion-label>
+      <ion-label>{{detail?.nutrient?.name}}: {{getDetailAmount(detail)}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>
