@@ -17,12 +17,12 @@ export class AppComponent {
     public appPages = [
         {
             title: 'Search',
-            url: '/search',
+            url: '/app/search',
             icon: 'search'
         },
         {
             title: 'Favorites',
-            url: '/favorites',
+            url: '/app/favorites',
             icon: 'star'
         }
     ];
@@ -42,7 +42,7 @@ export class AppComponent {
             if (event instanceof NavigationEnd) {
                 const routerState = router.routerState;
                 const snapshot = router.routerState.root;
-                const title = `E2 Solutions - ${this.getTitle(routerState, snapshot).join(' - ')}`;
+                const title = `${this.getTitle(routerState, snapshot).join(' - ')}`;
                 titleService.setTitle(title);
                 this.appStore.updateUiState({
                     currentRouteData: this.collectRouteData(routerState, snapshot),

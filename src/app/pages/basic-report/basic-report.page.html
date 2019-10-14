@@ -7,7 +7,7 @@
     <ion-buttons slot="end">
       <ion-button (click)="returnToSearch()">
         <ion-icon class="ion-margin-end" name="return-left"></ion-icon>
-        Return to Search
+        {{returnText$ | async}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

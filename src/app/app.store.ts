@@ -6,17 +6,25 @@ import {BreakpointSizes, ScreenSizeBreakpointService} from './services/screen-si
 
 export type SidenavMode = 'over' | 'push' | 'side';
 
+export enum BasicReportAccess {
+    SEARCH,
+    FAVORITES,
+    LOAD
+}
+
 export interface AppState {
     navigating: boolean;
     loading: boolean;
     windowSize: BreakpointSizes;
     currentRouteData: object;
     currentRouteParams: object;
+    basicReportAccessedBy: BasicReportAccess;
 }
 
 export const INITIAL_APP_STATE: Partial<AppState> = {
     navigating: false,
     loading: false,
+    basicReportAccessedBy: BasicReportAccess.LOAD
 };
 
 @Injectable({

@@ -1,19 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FoodSearchStore} from '../../stores/food-search.store';
 import {FoodItemFromSearch} from '../../models/foods/food-item-from-search.model';
 import {FOOD_ITEMS} from '../../localstorage.keys';
 import {PageableDataList} from '../../models/api/pageble-data-list';
-import {AppStore} from '../../app.store';
-import {Observable} from 'rxjs';
+import {AppStore, BasicReportAccess} from '../../app.store';
+import {Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {FavoritesService} from '../../services/favorites.service';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-search',
     templateUrl: './search.page.html',
     styleUrls: ['./search.page.scss'],
 })
-export class SearchPage implements OnInit {
+export class SearchPage implements OnInit, OnDestroy {
 
     constructor(
         private foodSearchStore: FoodSearchStore,
@@ -28,20 +29,28 @@ export class SearchPage implements OnInit {
     foodSearchResults: FoodItemFromSearch[];
     searchMade = false;
     firstSearchComplete = false;
+    loading = false;
+    destroy$ = new Subject<boolean>();
 
     ngOnInit() {
         this.isMobile = this.appStore.isMobile();
-        this.foodSearchStore.loading.subscribe(loading => {
+        this.foodSearchStore.loading.pipe(takeUntil(this.destroy$)).subscribe(loading => {
             if (!loading) {
                 this.foodSearchResults = (JSON.parse(localStorage.getItem(FOOD_ITEMS)) as PageableDataList<FoodItemFromSearch>).content;
                 if (this.searchMade) {
                     this.firstSearchComplete = true;
                 }
-                console.log(JSON.parse(localStorage.getItem(FOOD_ITEMS)));
+                this.loading = false;
             } else {
                 this.searchMade = true;
+                this.loading = true;
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 
     search() {
@@ -55,7 +64,8 @@ export class SearchPage implements OnInit {
     }
 
     getFoodBasicReport(fdcId: number): void {
-        this.router.navigate(['/basic-report', fdcId]);
+        this.appStore.updateUiState({basicReportAccessedBy: BasicReportAccess.SEARCH});
+        this.router.navigate(['app/basic-report', fdcId]);
     }
 
     addFavorite(food: FoodItemFromSearch): void {
@@ -67,6 +77,6 @@ export class SearchPage implements OnInit {
     }
 
     isAFavorite(fdcId: number): boolean {
-        return !!localStorage.getItem(fdcId.toString());
+        return !!this.favorites.getFavorite(fdcId);
     }
 }

@@ -1,6 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Favorite} from '../models/favorites/add-favorite.model';
 
+interface FavoritesContainer {
+    favorites: Favorite[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -10,24 +14,42 @@ export class FavoritesService {
     }
 
     addFavorite(addFavorite: Favorite) {
-        localStorage.setItem(addFavorite.fdcId.toString(), JSON.stringify(addFavorite));
+        let favorites: FavoritesContainer = JSON.parse(localStorage.getItem('favorites'));
+        if (!!favorites) {
+            if (favorites.favorites.findIndex(f => f.fdcId === addFavorite.fdcId) === -1) {
+                favorites.favorites.push(addFavorite);
+            }
+        } else {
+            favorites = {favorites: []};
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
     removeFavorite(fdcId: number) {
-        localStorage.removeItem(fdcId.toString());
+        const favorites = this.getFavoritesContainer();
+        const newFavorites = favorites.favorites.filter(f => f.fdcId !== fdcId);
+        favorites.favorites = newFavorites;
+        this.setFavoritesContainer(favorites);
     }
 
     getFavorite(fdcId: number): Favorite {
-        return JSON.parse(localStorage.getItem(fdcId.toString()));
+        try {
+            return this.getFavoritesContainer().favorites.find(f => f.fdcId === fdcId);
+        } catch (e) {
+            return null;
+        }
     }
 
     getFavorites(): Favorite[] {
-        const f = [];
-        let key = 0;
-        while (!!localStorage.key(key)) {
-            f.push(localStorage.getItem(key.toString()));
-            key++;
-        }
-        return f;
+        const container = this.getFavoritesContainer();
+        return !!container ? container.favorites : [];
+    }
+
+    getFavoritesContainer(): FavoritesContainer {
+        return JSON.parse(localStorage.getItem('favorites')) as FavoritesContainer;
+    }
+
+    setFavoritesContainer(favoritesContainer: FavoritesContainer) {
+        localStorage.setItem('favorites', JSON.stringify(favoritesContainer));
     }
 }

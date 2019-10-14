@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FavoritesService} from '../../services/favorites.service';
-import {AppStore} from '../../app.store';
+import {AppStore, BasicReportAccess} from '../../app.store';
 import {Observable} from 'rxjs';
 import {Favorite} from '../../models/favorites/add-favorite.model';
-import {FoodItemFromSearch} from '../../models/foods/food-item-from-search.model';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-favorites',
@@ -17,7 +17,8 @@ export class FavoritesPage implements OnInit {
 
     constructor(
         private favoritesService: FavoritesService,
-        private appStore: AppStore
+        private appStore: AppStore,
+        private router: Router
     ) {
     }
 
@@ -26,15 +27,18 @@ export class FavoritesPage implements OnInit {
         this.favorites = this.favoritesService.getFavorites();
     }
 
-    addFavorite(food: FoodItemFromSearch): void {
-        this.favoritesService.addFavorite({fdcId: food.fdcId, description: food.description, brand: food.brandOwner});
-    }
-
     removeFavorite(fdcId: number): void {
         this.favoritesService.removeFavorite(fdcId);
+        this.favorites = this.favoritesService.getFavorites();
     }
 
     isAFavorite(fdcId: number): boolean {
         return !!localStorage.getItem(fdcId.toString());
+    }
+
+
+    getFoodBasicReport(fdcId: number): void {
+        this.appStore.updateUiState({basicReportAccessedBy: BasicReportAccess.FAVORITES});
+        this.router.navigate(['app/basic-report', fdcId]);
     }
 }

@@ -12,13 +12,16 @@
 <ion-content justify-content-evenly>
     <div class="search-row">
         <ion-searchbar
+                (keyup.enter)="search()"
                 (ionChange)="valueChange($event)"
                 animated
                 showCancelButton="focus"
                 placeholder="Search for Food!"
         >
         </ion-searchbar>
-        <ion-button (click)="search()">Search</ion-button>
+        <ion-button (click)="search()" (keyup.enter)="search()">
+            <ng-container *ngIf="!loading; else spinner">Search</ng-container>
+        </ion-button>
     </div>
 
     <ion-list *ngIf="firstSearchComplete">
@@ -53,7 +56,7 @@
 </mat-menu>
 
 <ng-template #unfavorite let-food="food">
-    <ion-button slot="end" color="secondary" (click)="removeFavorite(food.fdcId)">
+    <ion-button slot="end" color="secondary" (click)="removeFavorite(food?.fdcId)">
         <ion-icon name="star" slot="end"></ion-icon>
         Unfavorite
     </ion-button>
@@ -64,4 +67,8 @@
         <ion-icon name="star" slot="end"></ion-icon>
         Favorite
     </ion-button>
+</ng-template>
+
+<ng-template #spinner>
+    <ion-spinner></ion-spinner>
 </ng-template>
